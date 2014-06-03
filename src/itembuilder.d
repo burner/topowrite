@@ -7,6 +7,8 @@ import logger;
 
 struct BuildResult {
 	string header;
+	string introduction;
+	string conclusion;
 	Item[string] items;
 }
 
@@ -25,6 +27,16 @@ BuildResult buildItems(JSONValue v) {
 			assert(t == JSON_TYPE.STRING, 
 				"The header key must have a string as a value.");
 			ret.header = item.str();
+		} else if(key == "introduction") {
+			t = item.type();
+			assert(t == JSON_TYPE.STRING, 
+				"The introduction key must have a string as a value.");
+			ret.introduction = item.str();
+		} else if(key == "conclusion") {
+			t = item.type();
+			assert(t == JSON_TYPE.STRING, 
+				"The conclusion key must have a string as a value.");
+			ret.conclusion = item.str();
 		} else {
 			ret.items[key] = buildItem(key, item);
 		}

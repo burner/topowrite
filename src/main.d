@@ -15,7 +15,9 @@ import sortdep;
 string templateS =
 `
 {
-	"header" : "your latex settings hear with begin{document}",
+	"header" : "your latex settings to place before begin{document}",
+	"introduction" : "the input file to place as introduction",
+	"conclusion" : "the input file to place as conclusion",
 
 	"a" : {
 		"depends" : ["b", "c"],
@@ -82,11 +84,21 @@ void main(string[] args) {
 	trace(parseResult.header);
 
 	auto output = File(outputFile, "w");
-	output.writefln("\\input{%s}", parseResult.header);
+	assert(!parseResult.header.empty, "You must specify a header.");
+	auto header = File(parseResult.header, "r");
+	copy(header.byLine().map!(a => a[0 .. ($ > 0) ? $-1 : $] ~ "\n"), output.lockingTextWriter());
+	//output.writefln("\\input{%s}", parseResult.header);
 	output.writeln("\n\\begin{document}");
+	if(!parseResult.introduction.empty) {
+		output.writefln("\\input{%s}", parseResult.introduction);
+	}
 
 	foreach(key; sorted) {
 		output.writefln("\\input{%s}", key.input);
+	}
+
+	if(!parseResult.conclusion.empty) {
+		output.writefln("\\input{%s}", parseResult.conclusion);
 	}
 
 	output.writeln("\\end{document}");
