@@ -79,7 +79,7 @@ void main(string[] args) {
 	auto pRslt = parseJSON(iFile.byLine().joiner());
 	auto parseResult = buildItems(pRslt);
 
-	auto sorted = sortDependencies(parseResult.items);
+	auto sorted = sortDependencies(parseResult.items).reverse;
 	traceF("%s", sorted.reverse);
 	trace(parseResult.header);
 
